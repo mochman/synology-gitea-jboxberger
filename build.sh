@@ -48,7 +48,7 @@ gitea_target_package_name_escaped=$(echo "$gitea_target_package_name" | tr '/' '
 ########################################################################################################################
 # VARIABLES
 ########################################################################################################################
-project_name="synology-gitea-jboxberger"
+project_name="synology-gitea-mochman"
 current_dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 project_tmp="$current_dir/tmp"
 project_src="$current_dir/src"
@@ -57,11 +57,11 @@ project_build="$current_dir/build/$gitea_target_package_version"
 ########################################################################################################################
 # INIT
 ########################################################################################################################
-if [ $(dpkg-query -W -f='${Status}' git 2>/dev/null | grep -c "ok installed") -eq 0 ] || \
-  [ $(dpkg-query -W -f='${Status}' jq 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-    sudo apt-get update
-    sudo apt-get install -y git jq python
-fi
+#if [ $(dpkg-query -W -f='${Status}' git 2>/dev/null | grep -c "ok installed") -eq 0 ] || \
+#  [ $(dpkg-query -W -f='${Status}' jq 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+#    sudo apt-get update
+#    sudo apt-get install -y git jq python
+#fi
 
 if [ -d $project_build ]; then
   rm -rf $project_build
@@ -139,7 +139,7 @@ sed -i -e "/^extractsize=/s/=.*/=\"$EXTRACTSIZE\"/" $project_tmp/INFO
 # create spk-name
 new_file_name=$project_name"-aio-"$gitea_target_package_version"-"$spk_version".spk"
 
-cd $project_tmp/ && tar --format=gnu -cf $project_build/$new_file_name * --exclude='package' && cd ../
+cd $project_tmp/ && tar --format=gnu --exclude='package' -cf $project_build/$new_file_name * && cd ../
 if [ $IS_DEBUG == 0 ]; then
   rm -rf "$project_tmp"
 fi

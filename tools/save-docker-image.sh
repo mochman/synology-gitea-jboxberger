@@ -4,11 +4,11 @@
 ########################################################################################################################
 # install dependencies
 ########################################################################################################################
-if [ $(dpkg-query -W -f='${Status}' docker.io 2>/dev/null | grep -c "ok installed") -eq 0 ] || \
-   [ $(dpkg-query -W -f='${Status}' pxz 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-    sudo apt-get update
-    sudo apt-get install -y docker.io pxz
-fi
+#if [ $(dpkg-query -W -f='${Status}' docker.io 2>/dev/null | grep -c "ok installed") -eq 0 ] || \
+#   [ $(dpkg-query -W -f='${Status}' pxz 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+#    sudo apt-get update
+#    sudo apt-get install -y docker.io pxz
+#fi
 
 ########################################################################################################################
 # The command line help
@@ -18,7 +18,7 @@ display_help() {
     echo
     echo "   --image       docker image you want to save <image_name>:<version>"
     echo "   --target-dir  image file destination directory"
-    echo "   --delete      deletes pulled image after export"
+    echo "   --keep-image  keeps pulled image after export"
     echo
     # echo some stuff here for the -a or --add-options
     exit 1
@@ -91,7 +91,7 @@ echo "pull image $image_name:$image_version"
 sudo docker pull "$image_name:$image_version"
 
 echo "export image $image_name:$image_version"
-sudo docker save "$image_name" | pxz > "$TARGET_DIR/$(echo "$image_name" | tr '/' '-')-$image_version.tar.xz"
+sudo docker save "$image_name:$image_version" | xz -T 4 > "$TARGET_DIR/$(echo "$image_name" | tr '/' '-')-$image_version.tar.xz"
 
 if [ "$KEEP_IMAGE" == 0 ]; then
   echo "deleting image $image_name:$image_version"
